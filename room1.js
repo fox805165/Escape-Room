@@ -1,4 +1,26 @@
+var arrow;
+var door; 
+var keyLock; 
+var tiles;
+var button;
+var window; 
 
+var keyLocation; 
+
+
+var doorStartX;
+var doorStartY; 
+var doorEndX;
+var doorEndY;
+var doorLocation;
+
+var windowStartX;
+var windowStartY; 
+var windowEndX;
+var windowEndY;
+var windowLocation; 
+
+// function lock
 var canvas;
 
 // lock variables for canvas 2 lock combination
@@ -15,211 +37,131 @@ var lockcombo2;
 var lockcombo3;
 
 //lock varibables for sizes 
-var px1 = 102; 
-var px2 = 126; 
-var px3 = 149; 
+var px1 = 450; 
+var px2 = 450; 
+var px3 = 450; 
 
-var py = 95;
+var py = 365;
+var py2 = 395;
+var py3 = 425; 
 
-var door; 
-
-// timer variables 
-var initialTime = 0;
-var newSecond = 0;
-var q = 0;
-var minuteMultiplier = 0;
-var reversedTime = 0;
-var recordTime = false;
-var nextMinute = true;
-
-
-function preLoad()
+function preload() 
 {
+  arrow = loadImage('https://dl.dropboxusercontent.com/s/xg8x718lw239jae/right-arrow-icon-114837-11.png');
   
-  door =loadImage('https://dl.dropboxusercontent.com/s/u205rsxeah4ky8b/door-clipart-rectangle-doors-clipart.jpg');
+  door = loadImage('https://dl.dropboxusercontent.com/s/u205rsxeah4ky8b/door-clipart-rectangle-doors-clipart.jpg');
+  
+  keyLock = loadImage('https://dl.dropboxusercontent.com/s/ojyn4r1elha97r3/clipart-best-clipart-best-IexDVP-clipart.png?');
+  
+  tiles = loadImage('https://dl.dropboxusercontent.com/s/vlplvqx278fycwo/j21sjfswknnpvl4jaboilbvr43lml7u3it1djnfj9ddybtewrwxins1klqf3yjkc-o.jpg');
+  
+  button = loadImage('https://dl.dropboxusercontent.com/s/zs28t9145ytdm86/Hopstarter-Soft-Scraps-Button-Blank-Red.ico');
+  
+  window = loadImage('https://dl.dropboxusercontent.com/s/3wys5hvet1n8qgc/era3-2003-c-prison-bars-top.png');
+
 
 }
 
+
 function setup()
 {
-  createCanvas(800,800);
-  canvas = 1;
+  createCanvas(900,600);
+  
+  doorLocation = 1; 
+  doorStartX = 0; 
+  doorStartY = 300;
+  doorEndX = 40
+  doorEndY = 30;
+  
+  windowStartX = 0;
+  windowStartY = 100;
+  windowEndX = 40;
+  windowEndY = 30;
+  windowLocation = 1; 
+  
+  canvas = 1; 
+  
   lock = false; 
   lock1 = false;
   lock2 = false; 
   lock3 = false;
-  
+
   lockcombo = 1;
   lockcombo2 = 1; 
   lockcombo3 = 1; 
+  
+  
 }
 
 function draw()
 {
-  background(0);
-  image(rightCanvas,0,0);
+  background(255,0,0);
+  image(tiles,0,0);
+  fill(139,69,19);
+  // window picture 
+  rect(windowStartX,windowStartY,10,150);
   
-  if (canvas == 1) 
+  // bed picture 
+  fill(255,248,220);
+  rect(300,0,300,150);
+  
+  //toilet picture 
+  fill(255,215,0);
+  rect(700,0,200,180);
+  x();
+  
+  if (doorLocation == 1)
   {
-    canvas1();
+    fill(255,255,0);
+    rect(doorStartX,doorStartY,10,150);
+    fill(0);
   }
-  else if (canvas == 2)
+  else if (doorLocation == 2) 
   {
-    canvas2();
+    doorFull();
   }
-  else if (canvas == 3)
+  
+  if (mouseX > doorStartX && mouseX < doorStartX+10 && mouseY > doorStartY && mouseY < doorStartY+150)
   {
-    canvas3();
+    cursor(HAND);
+    if (mouseIsPressed == true && doorLocation == 1)
+    {
+      doorLocation = 2;
+    }
   }
+  else
+  {
+    cursor(ARROW);
+  }
+  
+  fill(255);
+  rect(5,15,54,20);
+  image(arrow,0,0,512/10,512/10);
+
+  if(doorLocation == 2 && mouseX > 0 && mouseX < 52 && mouseY > 0 && mouseY < 52 && mouseIsPressed)
+  {
+    cursor(HAND);
+    doorLocation = 1; 
+  }  
 }
 
-
-function drawCanvasButton()
+function doorFull()
 {
-  var x = 10;
-  var y = 10;
-
-  fill(0,0,0);
-  rect(x,y,90,50);
-  fill(255,255,255);
-  text("Canvas",x+20,y+20);
-  text("Button",x+20,y+35);
-
-  if (lock == false && mouseX > x && mouseX < x+90 && mouseY > y && mouseY < y+50 && mouseIsPressed == true)
-  {
-    if(canvas == 1)
-    {
-      canvas = 2;
-      lock = true; 
-    }
-    else if(canvas == 2)
-    {
-      canvas = 3;
-      lock = true;
-    }
-    else if(canvas == 3) 
-    {
-      canvas = 1;
-      lock = true;
-    }
-  }
-  
-}
-
-function canvas1()
-{
-  background(0,0,0);
-
-  strokeWeight(1);
-  
-  fill(255,255,255);
-  stroke(255,255,255);
-  
-  drawCanvasButton();
-  inventory();
-  
-  if (second() == 0)
-  {
-    if (q == 0)
-    {
-      minuteMultiplier = minuteMultiplier + 1;
-      q = 5;
-    }
-  }
-
-
-  if (recordTime == false)
-  {
-    recordTime = true;
-    initialTime = second();
-  }
-  //                                 25..59   - 25
-  newSecond = minuteMultiplier*60 + second() - initialTime;
-
-  // 90 is the inital value 
-  reversedTime = 10 - newSecond;
-
-  if(reversedTime <= 0)
-  {
-    text("Time is up",300,200);
-  }
-
-  text("Timer increase: "+newSecond,50,100);
-  text("second(): "+second(),50,150);
-  text("initialTime: "+initialTime,50,200);
-  text("reversed time: "+reversedTime,150,250);
-
-}
-
-function canvas2()
-{
-  drawCanvasButton();
-  inventory();
-  
-  // function for the full combination structure 
+  image(door,210,115,275,446);  
   passCode1();
-   
-  if(lockcombo == 2 && lockcombo2 == 1 && lockcombo3 == 1)
+  image(button,445,460,256/11,256/11); 
+  
+  if(keyLocation == 1) 
   {
     fill(255);
-    text("yay",300,300);
+    image(keyLock,430,270,512/10,512/10);
   }
-}
-
-function canvas3()
-{
-  drawCanvasButton();
-  inventory();
-//  text("Ney",100,200);
-  //rect(10,275,200,5);
-  //rect(70,100,100,150);
-
-}
-
-
-function mouseReleased()
-{
-  if(lock)
+  
+  if(lockcombo == 7 && lockcombo2 == 1 && lockcombo3 == 6 && mouseX > 445 && mouseX < 445+(256/11) && mouseY > 460 && mouseY < 460+(265/11) && mouseIsPressed == true)
   {
-    lock = false; 
+    keyLocation = 1; 
   }
-  
-  if(lock1)
-  {
-    lock1 = false; 
-  }
-  
-  if(lock2)
-  {
-    lock2 = false; 
-  }
-  
-  if(lock3)
-  {
-    lock3 = false; 
-  }
-}
 
-function inventory()
-{
-  strokeWeight(5);
-  
-  fill(160);
-  rect(50,300,650,100);
-
-  fill(175);
-  stroke(0);
-  rect(55,310,640,75);
-
-  rect(55,310,80,75)
-  rect(135,310,80,75);
-  rect(215,310,80,75);
-  rect(295,310,80,75);
-  rect(375,310,80,75);
-  rect(455,310,80,75);
-  rect(535,310,80,75);
-  
-  strokeWeight(1);
 }
 
 function passCode1()
@@ -228,16 +170,17 @@ function passCode1()
   pass2Button();
   pass3Button();
 
+  // white outer layer of the locks 
   fill(255);
-  rect(px1-2,100,20,20);
-  rect(px2-3,100,20,20);
-  rect(px3-3,100,20,20);
+  rect(px1-3,py+5,20,20);
+  rect(px2-3,py2+5,20,20);
+  rect(px3-3,py3+5,20,20);
 
   //grey button which is the combination options for the key lock. 
   fill(155);
   rect(px1,py,15,6);
-  rect(px2,py,15,6);
-  rect(px3,py,15,6);
+  rect(px2,py2,15,6);
+  rect(px3,py3,15,6);
 
   fill(0);
   strokeWeight(0);
@@ -250,7 +193,7 @@ function passCode1()
   {
     text ("2",px1+5,py+20);
   }
-  else if(lockcombo ==3)
+  else if(lockcombo == 3)
   {
     text("3",px1+5,py+20);
   }
@@ -285,84 +228,84 @@ function passCode1()
 
   if(lockcombo2 == 1)
   {
-    text("1",px2+5,py+20);
+    text("1",px2+5,py2+20);
   }
   else if(lockcombo2 == 2)
   {
-    text ("2",px2+5,py+20);
+    text ("2",px2+5,py2+20);
   }
-  else if(lockcombo2==3)
+  else if(lockcombo2== 3)
   {
-    text("3",px2+5,py+20);
+    text("3",px2+5,py2+20);
   }
   else if(lockcombo2 == 4)
   {
-    text("4",px2+5,py+20);
+    text("4",px2+5,py2+20);
   }
   else if(lockcombo2 == 5)
   {
-    text("5",px2+5,py+20);
+    text("5",px2+5,py2+20);
   }
   else if(lockcombo2 ==6)
   {
-    text("6",px2+5,py+20);
+    text("6",px2+5,py2+20);
   }
   else if(lockcombo2 == 7)
   {
-    text("7",px2+5,py+20);
+    text("7",px2+5,py2+20);
   }
-  else if(lockcombo2 ==8)
+  else if(lockcombo2 == 8)
   {
-    text("8",px2+5,py+20);
+    text("8",px2+5,py2+20);
   }
   else if(lockcombo2 == 9)
   {
-    text("9",px2+5,py+20);
+    text("9",px2+5,py2+20);
   }
   else if(lockcombo2 == 10)
   {
-    text("0",px2+5,py+20);
+    text("0",px2+5,py2+20);
   }
 
   if(lockcombo3 == 1)
   {
-    text("1",px3+5,py+20);
+    text("1",px3+5,py3+20);
   }
   else if(lockcombo3 == 2)
   {
-    text ("2",px3+5,py+20);
+    text ("2",px3+5,py3+20);
   }
   else if(lockcombo3 ==3)
   {
-    text("3",px3+5,py+20);
+    text("3",px3+5,py3+20);
   }
   else if(lockcombo3 == 4)
   {
-    text("4",px3+5,py+20);
+    text("4",px3+5,py3+20);
   }
   else if(lockcombo3 == 5)
   {
-    text("5",px3+5,py+20);
+    text("5",px3+5,py3+20);
   }
   else if(lockcombo3 ==6)
   {
-    text("6",px3+5,py+20);
+    text("6",px3+5,py3+20);
   }
   else if(lockcombo3 == 7)
   {
-    text("7",px3+5,py+20);
+    text("7",px3+5,py3+20);
   }
   else if(lockcombo3 ==8)
   {
-    text("8",px3+5,py+20);
+    text("8",px3+5,py3+20);
   }
   else if(lockcombo3 == 9)
   {
-    text("9",px3+5,py+20);
+    text("9",px3+5,py3+20);
   }
   else if(lockcombo3 == 10)
   {
-    text("0",px3+5,py+20);
+    text("0",px3+5,py3+20);
   }
 }
 
@@ -425,7 +368,7 @@ function pass1Button()
 
 function pass2Button()
 {
-  if (lock2 == false && mouseX > px2 && mouseX < px2+15 && mouseY > py && mouseY < py+6 && mouseIsPressed == true)
+  if (lock2 == false && mouseX > px2 && mouseX < px2+15 && mouseY > py2 && mouseY < py2+6 && mouseIsPressed == true)
   {
     if(lockcombo2 == 1)
     {
@@ -482,7 +425,7 @@ function pass2Button()
 
 function pass3Button()
 {
-  if (lock3 == false && mouseX > px3 && mouseX < px3+15 && mouseY > py && mouseY < py+6 && mouseIsPressed == true)
+  if (lock3 == false && mouseX > px3 && mouseX < px3+15 && mouseY > py3 && mouseY < py3+6 && mouseIsPressed == true)
   {
     if(lockcombo3 == 1)
     {
@@ -534,5 +477,32 @@ function pass3Button()
       lockcombo3 = 1;
       lock3 = true; 
     }
+  } 
+}
+
+function x()
+{
+  stroke(255,51,153);
+  strokeWeight(3);
+  line(225,375,250,350);
+  line(250,375,225,350);
+  stroke(0);
+}
+
+function mouseReleased()
+{
+  if(lock1)
+  {
+    lock1 = false; 
+  }
+
+  if(lock2)
+  {
+    lock2 = false; 
+  }
+
+  if(lock3)
+  {
+    lock3 = false; 
   }
 }
