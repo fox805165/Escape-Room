@@ -3,21 +3,24 @@ var door;
 var keyLock; 
 var tiles;
 var button;
-var window; 
+var bars; 
+var key;
 
+var comboLocation; 
+
+var keyStartX; 
+var keyStartY; 
+var keyEndX; 
+var keyEndY; 
 var keyLocation; 
 
 
 var doorStartX;
 var doorStartY; 
-var doorEndX;
-var doorEndY;
 var doorLocation;
 
 var windowStartX;
 var windowStartY; 
-var windowEndX;
-var windowEndY;
 var windowLocation; 
 
 // function lock
@@ -45,6 +48,8 @@ var py = 365;
 var py2 = 395;
 var py3 = 425; 
 
+
+
 function preload() 
 {
   arrow = loadImage('https://dl.dropboxusercontent.com/s/xg8x718lw239jae/right-arrow-icon-114837-11.png');
@@ -57,8 +62,9 @@ function preload()
   
   button = loadImage('https://dl.dropboxusercontent.com/s/zs28t9145ytdm86/Hopstarter-Soft-Scraps-Button-Blank-Red.ico');
   
-  window = loadImage('https://dl.dropboxusercontent.com/s/3wys5hvet1n8qgc/era3-2003-c-prison-bars-top.png');
+  bars = loadImage('https://dl.dropboxusercontent.com/s/k3358oh8q2hr8mx/421888962_712ac07e5f_b.jpg');
 
+  key = loadImage('https://dl.dropboxusercontent.com/s/sgygjmn6xzjaw8j/Paomedia-Small-N-Flat-Key.ico');
 
 }
 
@@ -70,13 +76,9 @@ function setup()
   doorLocation = 1; 
   doorStartX = 0; 
   doorStartY = 300;
-  doorEndX = 40
-  doorEndY = 30;
   
   windowStartX = 0;
   windowStartY = 100;
-  windowEndX = 40;
-  windowEndY = 30;
   windowLocation = 1; 
   
   canvas = 1; 
@@ -90,17 +92,28 @@ function setup()
   lockcombo2 = 1; 
   lockcombo3 = 1; 
   
+  keyStartX = 405;
+  keyStartY = 425;
+  keyEndX = 20;
+  keyEndY = 530; 
+  keyLocation = 0; 
+  
   
 }
+
+
 
 function draw()
 {
   background(255,0,0);
   image(tiles,0,0);
-  fill(139,69,19);
-  // window picture 
-  rect(windowStartX,windowStartY,10,150);
+  inventory();
+
   
+  stroke(255);
+  strokeWeight(1);
+  text(mouseX,100,100);
+  text(mouseY,220,100);
   // bed picture 
   fill(255,248,220);
   rect(300,0,300,150);
@@ -118,9 +131,11 @@ function draw()
   }
   else if (doorLocation == 2) 
   {
+    stroke(0);
     doorFull();
   }
   
+  //clicking on yellow rectangle to get a bigger door image
   if (mouseX > doorStartX && mouseX < doorStartX+10 && mouseY > doorStartY && mouseY < doorStartY+150)
   {
     cursor(HAND);
@@ -134,15 +149,57 @@ function draw()
     cursor(ARROW);
   }
   
+  // going back button (arrow) 
   fill(255);
   rect(5,15,54,20);
   image(arrow,0,0,512/10,512/10);
 
-  if(doorLocation == 2 && mouseX > 0 && mouseX < 52 && mouseY > 0 && mouseY < 52 && mouseIsPressed)
+  // if door is present then click arrow to go back
+  if(doorLocation == 2 && mouseX > 0 && mouseX < 52 && mouseY > 0 && mouseY < 52 && mouseIsPressed== true )
   {
     cursor(HAND);
     doorLocation = 1; 
   }  
+  
+  // if window is present then click arrow to go back 
+  if(windowLocation == 2 && mouseX > 0 && mouseX < 52 && mouseY > 0 && mouseY < 52 && mouseIsPressed == true)
+  {
+    cursor(HAND); 
+    if(keyLocation == 1)
+    {
+      keyLocation = 0; 
+    }
+    windowLocation = 1; 
+  }
+  
+  if(windowLocation == 1) 
+  {
+    //window original location
+    fill(139,69,19);
+    rect(windowStartX,windowStartY,10,150);
+  }
+  else if(windowLocation == 2)
+  {
+    fill(139,69,19);
+    rect(windowStartX,windowStartY,10,150);
+    windowFull();
+  }
+
+
+  if(mouseX > windowStartX && mouseX < windowStartX + 10 && mouseY > windowStartY && mouseY < windowStartY +150)
+  {
+    cursor(HAND);
+    if(mouseIsPressed == true && windowLocation == 1)
+    {
+      windowLocation = 2; 
+    }
+    else 
+    {
+      cursor(ARROW);
+    }
+  }
+  
+  key1();
 }
 
 function doorFull()
@@ -151,7 +208,7 @@ function doorFull()
   passCode1();
   image(button,445,460,256/11,256/11); 
   
-  if(keyLocation == 1) 
+  if(comboLocation == 1) 
   {
     fill(255);
     image(keyLock,430,270,512/10,512/10);
@@ -159,9 +216,61 @@ function doorFull()
   
   if(lockcombo == 7 && lockcombo2 == 1 && lockcombo3 == 6 && mouseX > 445 && mouseX < 445+(256/11) && mouseY > 460 && mouseY < 460+(265/11) && mouseIsPressed == true)
   {
-    keyLocation = 1; 
+    comboLocation = 1; 
   }
+}
 
+function windowFull()
+{
+  if (keyLocation == 0)
+  {
+     keyLocation = 1; 
+  }
+  fill(255);
+  image(bars,255,100,1024/2,768/2);
+  if(mouseX > keyStartX && mouseX < keyStartX+(256/10) && mouseY > keyStartY && mouseY < keyStartY+(256/10)) 
+  {
+    if(mouseIsPressed == true && keyLocation == 1)
+    {
+      cursor(HAND);
+      keyLocation = 2; 
+    }
+  }
+}
+
+function key1()
+{
+  if(keyLocation == 1)
+  {
+    image(key,keyStartX,keyStartY,256/10,256/10);
+  }
+  else if(keyLocation == 2)
+  {
+    image(key,keyStartX,keyStartY,256/10,256/10);
+
+    if(keyStartX > keyEndX)
+    {
+      keyStartX = keyStartX - 5; 
+    }
+    if(keyStartY < keyEndY)
+    {
+      keyStartY = keyStartY + 2;
+    }
+    if (!(keyStartX > keyEndX && keyStartY < keyEndY))
+    {
+      keyLocation = 3;
+    }
+
+  }
+  else if(keyLocation == 3)
+  {
+    image(key,keyEndX,keyEndY,256/6,256/6);
+  }
+}
+
+function keyMove()
+{
+  
 }
 
 function passCode1()
@@ -487,6 +596,28 @@ function x()
   line(225,375,250,350);
   line(250,375,225,350);
   stroke(0);
+}
+
+function inventory()
+{
+  strokeWeight(5);
+
+  fill(160);
+  rect(0,500,650,100);
+
+  fill(175);
+  stroke(0);
+  rect(5,510,640,75);
+
+  rect(5,510,80,75)
+  rect(75,510,80,75);
+  rect(150,510,80,75);
+  rect(225,510,80,75);
+  rect(300,510,80,75);
+  rect(375,510,80,75);
+  rect(450,510,80,75);
+
+  strokeWeight(1);
 }
 
 function mouseReleased()
