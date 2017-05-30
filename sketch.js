@@ -90,6 +90,7 @@ var empty;
 var doorView; 
 var doorView2;
 var hiddenDoor;
+var shelfLocation;
 
 var nextviewcount5;
 
@@ -108,7 +109,7 @@ function preload()
   sink = loadImage('https://dl.dropboxusercontent.com/s/pv9v0obeqsom5ji/Sink.png');
 
   toilet = loadImage('https://dl.dropboxusercontent.com/s/hheqqkt2dq0c1sl/toilet%20tissue.png');
- 
+
   door = loadImage('https://dl.dropboxusercontent.com/s/40uw7kiyyqrj1xx/Door.png');
 
   cabinet = loadImage('https://dl.dropboxusercontent.com/s/x9p92f30eo2tzsh/Cabinet.png')
@@ -116,29 +117,29 @@ function preload()
   bars = loadImage('https://dl.dropboxusercontent.com/s/selcj8yvawwf97a/window2.png');
 
   airvent = loadImage('https://dl.dropboxusercontent.com/s/nntyvma8yluz11n/Screen%20Shot%202017-05-18%20at%208.49.26%20AM.png');
-  
+
   open1 = loadImage('https://dl.dropboxusercontent.com/s/3v2t7f4wdzijwxi/Screen%20Shot%202017-05-18%20at%208.20.18%20AM.png');
-  
+
   doorOpen = loadImage('https://dl.dropboxusercontent.com/s/s2fy1lbldcg931p/door%20outside%20.png');
-  
+
   button = loadImage('https://dl.dropboxusercontent.com/s/zs28t9145ytdm86/Hopstarter-Soft-Scraps-Button-Blank-Red.ico');
-  
+
   keyLock = loadImage('https://dl.dropboxusercontent.com/s/ojyn4r1elha97r3/clipart-best-clipart-best-IexDVP-clipart.png');
-  
+
   key = loadImage('https://dl.dropboxusercontent.com/s/sgygjmn6xzjaw8j/Paomedia-Small-N-Flat-Key.ico');
-  
+
   tissue = loadImage('https://dl.dropboxusercontent.com/s/6e7oc52n9h0p8rj/toilet%20tissue%20%281%29.png');
-  
+
   books = loadImage('https://dl.dropboxusercontent.com/s/edw2977mc7psg63/books.png')
-  
+
   r1 = loadImage('https://dl.dropboxusercontent.com/s/h2e565qz2mf2o47/R1.png');
-  
+
   r2 = loadImage('https://dl.dropboxusercontent.com/s/w2591qeydpgu842/R2.png');
 
   r3 = loadImage('https://dl.dropboxusercontent.com/s/kxjp263ahsjks2j/R3.png');
-  
+
   r4 = loadImage('https://dl.dropboxusercontent.com/s/7m1r31t4algzv8c/R4.png');
-  
+
   begin = loadImage('https://dl.dropboxusercontent.com/s/yxj7i4wf32y25hw/Screen%20Shot%202017-05-16%20at%2011.18.58%20AM.png');
 
   shelf = loadImage('https://dl.dropboxusercontent.com/s/py44i28wdbf3qho/Screen%20Shot%202017-05-16%20at%2011.44.47%20AM.png');
@@ -146,9 +147,9 @@ function preload()
   empty = loadImage('https://dl.dropboxusercontent.com/s/51t52a49zvowjs5/Screen%20Shot%202017-05-16%20at%2011.46.41%20AM.png');
 
   doorView = loadImage('https://dl.dropboxusercontent.com/s/29xec9mzy9tg1rj/Screen%20Shot%202017-05-22%20at%206.29.41%20PM%20%281%29.png');
-  
+
   doorView2 = loadImage('https://dl.dropboxusercontent.com/s/ty1x39p3dxz5s7f/bookshelf%20missing%20books.png');
-  
+
   hiddenDoor = loadImage('https://dl.dropboxusercontent.com/s/6iu9ldhn5ld4tkd/Screen%20Shot%202017-05-19%20at%2011.30.16%20AM.png');
 }
 
@@ -160,7 +161,7 @@ function setup()
   closeviewcount = 0;
   lock = false;
   lock2 = false; 
-  
+
   inventoryitem = 0;
   showinventory = true;
 
@@ -190,7 +191,7 @@ function setup()
   lockcombo = 1;
   lockcombo2 = 1; 
   lockcombo3 = 1;
-  
+
   keyStartX = 405;
   keyStartY = 225;
   keyMovement = 0;
@@ -199,14 +200,15 @@ function setup()
   keyRotate = 0;
   tissueLocation = 0;
   cabinetLocation = 0;
-  
+
   bookLocation = 0; 
   bookStartX = 150;
   bookStartY = 233;
+  shelfLocation = 0;
 
-  
+
   canvasLocation = 0;
-  
+
   nextviewcount5 = 0;
 
 
@@ -217,15 +219,17 @@ function draw()
   background(255);
   if(canvasLocation == 0)
   {
-    room2Draw();
+    room1Draw();
   }
   else if(canvasLocation == 1)
   {
-    room1Draw();
+    room2Draw();
+  }
+  else if(canvasLocation == 2)
+  {
+    room3Draw();
   }
 }
-
-
 function room1Draw()
 {
   noFill();
@@ -278,7 +282,7 @@ function room1Draw()
     {
       nextviewcount = 4;
     }
-    
+
     ellipse(575,450,10,10);
     if(mouseX > 570 && mouseX < 590 && mouseY > 450 && mouseY < 465 && mouseIsPressed == true)
     {
@@ -296,13 +300,13 @@ function room2Draw()
     nextviewcount5 = nextviewcount - 1;
     lock = true;
   }
-  
+
   if (mouseX > 700 && mouseX < 800 && mouseY > 500 && mouseY < 600 && mouseIsPressed == true && lock == false)
   {
     nextviewcount5 = nextviewcount5 + 1;
     lock = true;
   }
-  
+
   if (nextviewcount5 > 3)
   {
     nextviewcount5 = 0; 
@@ -312,7 +316,7 @@ function room2Draw()
   {
     nextviewcount5 = 3;
   }
-  
+
   image(leftarrow,0,500,100,100);
   image(rightarrow,700,500,100,100);
   fill(255,0,0);
@@ -327,9 +331,16 @@ function room2Draw()
   }  
   inventory();
   cursor(ARROW);
+  fill(0,0,255);
+  text(mouseX,100,100);
+  text(mouseY,200,100);
 }
 
-//Transition images using the arrows to move canvases
+function room3Draw()
+{
+  background(0);
+}
+//Transition images using the arrows to move canvases (room 2)
 function nextview5()
 {
   if(nextviewcount5 == 0)
@@ -346,13 +357,11 @@ function nextview5()
   }
   else if(nextviewcount5 == 3)
   {
-  	image(hiddenDoor,0,0);
-  }
-  else if(nextviewcount5 == 4)
-  {
-    image(doorView,0,0);
+    shelfFull();
   }
 }
+
+//Transition images using the arrows to move canvases (room 1)
 function nextview()
 {
   if(nextviewcount == 0)
@@ -394,6 +403,8 @@ function nextview()
     door1();
   }
 }
+
+// this is the function in which allows the cabinet to open and close
 function cabinetFull()
 {
   if(cabinetLocation == 0)
@@ -410,12 +421,12 @@ function cabinetFull()
     image(open1,0,0);
     bookLocation = 1;
   }
-  
+
   if(mouseX > 410 && mouseX < 420 && mouseY > 445 && mouseY < 455 && mouseIsPressed == true)
   {
     cabinetLocation = 1;
   }
-  
+
   bookLocation1();
 }
 
@@ -423,19 +434,19 @@ function door1()
 {
   //background
   image(door,0,0);
-  
+
   // button to unlock the keyhole
   image(button,745,460,256/11,256/11); 
-  
+
   //code for the lock combination
   passCode1();
-  
+
   //changing the code from lock to unlock 
   if(comboLocation == 1) 
   {
     fill(255);
     image(keyLock,730,300,512/10,512/10);
-    
+
     if(mouseX > keyEndX && mouseX < keyEndX+256/10 && mouseY > keyEndY && mouseY < keyEndY+256/10 && mouseIsPressed == true)
     {
       keyMovement = 1;
@@ -455,29 +466,28 @@ function door1()
   {
     image(doorOpen,0,0);
   } 
-  
+
   keyMovement1();
-  
+
   if(mouseX > 745 && mouseX < 760 && mouseY > 310 && mouseY < 325 && keyMovement == 1)
   {
     fill(255);
     rect(680,10,110,30);
     fill(0);
     text("Move to Next Room",685,20);
-    
+
     if(mouseIsPressed == true)
     {
       canvasLocation = 1;
     }
   } 
-  
-}
 
+}
 
 function keyMovement1()
 {
   circleD = sqrt((mouseX - 755)*(mouseX - 755)+(mouseY - 325)*(mouseY - 325));
-  
+
   noFill();
   noStroke();
   ellipse(755,325,50,50);
@@ -492,15 +502,85 @@ function keyMovement1()
     {
       cursor(ARROW);
     }
-  
+
   }
-  
+
+}
+
+function shelfFull()
+{
+  if(shelfLocation == 0)
+  {
+    image(doorView2,0,0);
+  }
+  else if(shelfLocation == 1)
+  {
+    passShelf();
+  }
+  else if(shelfLocation == 2)
+  {
+    image(doorView,0,0);
+    fill(0);
+
+    text("Click door to enter Room 3.",120,100);
+    
+    if(mouseX > 290 && mouseX < 330 && mouseY > 290 && mouseY < 335 && mouseIsPressed == true)
+    {
+      canvasLocation = 2;
+    }
+  }
+
+  if(mouseX > bookEndX && mouseX < bookEndX + 181/4 && mouseY  > bookEndY && mouseY < bookEndY+185/4 && mouseIsPressed == true) 
+  {
+    bookMovement = 1;
+  }
+
+  bookMovement1();
+
+  if(mouseX > 450 && mouseX < 500 && mouseY > 220 && mouseY < 270 && mouseIsPressed == true)
+  {
+    shelfLocation = 1;
+  }
+
+}
+
+function passShelf()
+{	
+  image(hiddenDoor,0,0);
+  fill(0,255,0);
+  ellipse(415,118,10,10);
+  if(mouseX > 410 && mouseX < 420 && mouseY > 110 && mouseY < 120 && mouseIsPressed == true)
+  {
+    shelfLocation = 2;
+  }
+ 
+  bookMovement = 0;
+  cursor(ARROW);
+
 }
 
 function bookMovement1()
 {
-	
+  circle2D = sqrt((mouseX - 475)*(mouseX - 475)+(mouseY - 250)*(mouseY - 250));
+
+  noFill();
+  noStroke();
+  ellipse(475,250,75,75);
+  if(bookMovement == 1) 
+  {
+    if(circle2D < 32.5)
+    {
+      noCursor();
+      image(books,mouseX-181/3/2,mouseY -185/3/2,181/3,181/3);
+    }
+    else 
+    {
+      cursor(ARROW);
+    }
+  }
+
 }
+
 function keyRotation1()
 {
   if(keyRotate == 1)
@@ -521,6 +601,7 @@ function keyRotation1()
   }
   cursor(ARROW);
 }
+
 function windowFull()
 {
   image(bars,0,0);
@@ -571,7 +652,7 @@ function inventory()
       fill(0,0,0);
       text("show",10,25);
     }
-    
+
     lock2 = true;
   }
   // end - show/hide inventory
@@ -596,7 +677,7 @@ function inventory()
   if (item1inventoryposition == 0)
   {
     // if you click on the item set the inventory position it is on and increase inventory position to prepare next item
-    
+
     //key item. when mouse presses on the key the it becomes inside the inventory 
     if (mouseX > keyStartX && mouseX < keyStartX+256/10 && mouseY > keyStartY && mouseY < keyStartY+256/10 && mouseIsPressed == true && lock2 == false)
     {
@@ -605,7 +686,7 @@ function inventory()
       lock2 = true;
     }
   }
-  
+
   if (item2inventoryposition == 0)
   {
     if (mouseX > bookStartX && mouseX < bookStartX+item2Xsize && mouseY > bookStartY && mouseY < bookStartY+item2Ysize && mouseIsPressed == true && lock2 == false)
@@ -632,7 +713,7 @@ function inventory()
     if (item1inventoryposition > 0)
     {
       keyLocation = 2;
-      
+
     }
     if (item2inventoryposition > 0)
     {
@@ -642,7 +723,7 @@ function inventory()
     {
       tissueLocation = 2;
     }
-    
+
     keyLocation1();
     tissueLocation1();
     bookLocation1();
@@ -661,10 +742,10 @@ function bookLocation1()
   {
     bookStartX = bookEndX;
     bookStartY = bookEndY;
-    
+
     bookEndX = (spaces+50*item2inventoryposition-50)+5;
     bookEndY = 600-60;
-    
+
     image(books,bookEndX,bookEndY,181/4,185/4);;
   }
 }
@@ -700,16 +781,14 @@ function tissueLocation1()
   {
     tissueStartX = tissueEndX ;
     tissueStartY = tissueEndY ;
-    
+
     tissueEndX = (spaces+50*item3inventoryposition-50)-10;
     tissueEndY = 600 - 80;
-    
-  image(tissue,tissueEndX,tissueEndY,item3Xsize*1.25,item3Ysize*1.25);
+
+    image(tissue,tissueEndX,tissueEndY,item3Xsize*1.25,item3Ysize*1.25);
   }
 }
 
-
-  
 function passCode1()
 {
   pass1Button();
